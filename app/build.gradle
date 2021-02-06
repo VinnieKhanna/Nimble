@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.example.nimbleugahacks"
@@ -31,5 +31,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    //barcode scanner
+    //implementation 'com.google.mlkit:barcode-scanning:16.1.1'
 
+    //Twilio
+//    implementation group: "com.twilio.sdk", name: "twilio", version: "8.0.+"
+//    implementation group: "com.sparkjava", name: "spark-core", version: "2.7.1"
+//    implementation group: "org.slf4j", name: "slf4j-simple", version: "1.7.21"
 }
