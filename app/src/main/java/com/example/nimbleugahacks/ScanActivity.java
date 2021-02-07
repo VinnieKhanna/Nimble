@@ -79,7 +79,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 .header("nep-organization", "9f7c0f9112384eadb0e1e70d957cecfc")
                 .header("nep-correlation-id", "2021-0206")
                 .header("nep-enterprise-unit", "e75260c4ea46481989ad82d220b8bf4b")
-                .url("https://gateway-staging.ncrcloud.com/catalog/item-details/62")
+                .url("https://gateway-staging.ncrcloud.com/catalog/item-details/" + result.getText())
                 .build();
         client.newCall(request).enqueue(new Callback() {
 
