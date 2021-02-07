@@ -42,7 +42,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
 public class MainActivity extends AppCompatActivity{
-    private Handler mainHandler = new Handler();
+    public static Handler mainHandler = new Handler();
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2);
 
     public static double upTime = System.nanoTime();
