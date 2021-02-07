@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static TextView itemText;
     TextView ipmText;
-    Button scanButton, managerButton;
-    FloatingActionButton addManagerButton;
+    Button addManagerButton, managerButton;
+    FloatingActionButton scanButton;
     String phoneNum;
 
     @Override
@@ -74,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //
         items = new ArrayList<>();
+
 //        items.add("CART");
+
 
 
         recyclerView = findViewById(R.id.recycler);
@@ -84,10 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
         //
         itemText = findViewById(R.id.itemText);
-        scanButton = findViewById(R.id.scanbutton);
+
+        ipmText = findViewById(R.id.ipmText);
+        addManagerButton = findViewById(R.id.addManagerButton);
         managerButton = findViewById(R.id.managerButton);
         managerButton.setEnabled(false);
-        addManagerButton = findViewById(R.id.floatingactionbutton);
+        scanButton = findViewById(R.id.floatingactionbutton);
 
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             managerButton.setEnabled(true);
