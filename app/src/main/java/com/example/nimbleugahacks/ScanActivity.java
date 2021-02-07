@@ -103,7 +103,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     String name = packageIdentifiers.get(0).getAsJsonObject().get("type").getAsString();
 
                     String text = result.getText();
-                    Item curr = new Item(5, text, 2.99);
+                    Item curr = new Item(5, name, Double.parseDouble(price));
                     itemDao.nuke();
                     itemDao.insertAll(curr);
 
