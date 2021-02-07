@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -24,6 +25,15 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
     public static TextView newText;
     Button newButton;
+//
+//    private AppDatabase db = Room.databaseBuilder(this,
+//            AppDatabase.class, "nimbleDB").build();
+//    ItemDao itemDao = db.itemDao();
+
+//    public ItemDao getDB() {
+//        return itemDao;
+//    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
