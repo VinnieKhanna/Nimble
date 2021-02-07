@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static TextView newText;
     Button newButton;
+
     public static RecyclerView recyclerView;
     public static RecyclerAdapter adapter;
     public static List<String> items;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         managerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneNum = "6788346941";
+                String phoneNum = "4702094868";
                 String name = "This works?!";
                 if (!TextUtils.isEmpty(phoneNum)&&!TextUtils.isEmpty(name)) {
 
