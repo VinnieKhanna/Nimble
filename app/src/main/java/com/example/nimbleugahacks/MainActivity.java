@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity{
     TextView ipmText;
     Button addManagerButton, managerButton;
     FloatingActionButton scanButton;
-    String phoneNum;
+    String phoneNum = "";
+    private boolean warned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +112,10 @@ public class MainActivity extends AppCompatActivity{
                     startActivity(new Intent(getApplicationContext(), ScanActivity.class));
                     ipmText = (TextView)findViewById(R.id.ipmText);
                     if (ipmText == null) {
-                        Log.i("SAHILLLLLLLLL", "is ..");
+                        Log.i("SAHILL", "is ..");
                     }
                     scanCount++;
-                    Log.i("SAHIL LIKES MEN", "" + (System.nanoTime() - MainActivity.upTime)/1_000_000_000.0);
+                    Log.i("SAHIL", "" + (System.nanoTime() - MainActivity.upTime)/1_000_000_000.0);
                     double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
                     String txt = "" + ipm;
                     Log.i("SCAN UPDATE MAANAS",txt);
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity{
                 if (phoneNum == null || phoneNum.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please Add a Manager", Toast.LENGTH_SHORT).show();
                 }
-                String name = "This works?!";
+                String name = "Your Employee Requested Assistance!";
                 if (!TextUtils.isEmpty(phoneNum)&&!TextUtils.isEmpty(name)) {
 
                     if (checkPermission(Manifest.permission.SEND_SMS)) {
@@ -213,6 +214,22 @@ public class MainActivity extends AppCompatActivity{
                         String txt = "" + ipm;
                         Log.i("MAANAS FIXED", txt);
                         ipmText.setText(txt);
+                        if (ipm > 0 && ipm < 2 && !warned) {
+                            if (checkPermission(Manifest.permission.SEND_SMS)) {
+                                SmsManager smsManager = SmsManager.getDefault();
+                                try {
+                                    if (phoneNum.isEmpty()) {
+                                        smsManager.sendTextMessage("+16788346941", null, "Your Employee Needs Help!", null, null);
+                                    } else {
+                                        smsManager.sendTextMessage(phoneNum, null, "Your Employee Needs Help!", null, null);
+                                    }
+                                } catch(Error error) {
+
+                                }
+                            }
+                            Toast.makeText(MainActivity.this, "Alerting Manager", Toast.LENGTH_SHORT).show();
+                            warned = true;
+                        }
                     }
                 });
             }
