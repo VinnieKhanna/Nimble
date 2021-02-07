@@ -101,10 +101,11 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     JsonObject item = (JsonObject) jsonObject.get("item");
                     JsonArray packageIdentifiers = (JsonArray) item.get("packageIdentifiers");
                     JsonObject type = (JsonObject) packageIdentifiers.get(0).getAsJsonObject();
-                    String name = type.get("type").getAsString();
+                    final String name = type.get("type").getAsString();
+                    final int keyID = Integer.parseInt(type.get("value").getAsString());
 
                     String text = result.getText();
-                    final Item curr = new Item(5, text, 2.99);
+                    final Item curr = new Item(5, text, Double.parseDouble(price));
                     itemDao.nuke();
                     itemDao.insertAll(curr);
 
@@ -113,7 +114,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.items.add("ITEM: " + curr.itemID + ", " + curr.storeName + ", " + curr.price);
+                            MainActivity.items.add(name + "  ITEM # " + keyID + "  $" + curr.price);
                             MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
                         }
                     });
