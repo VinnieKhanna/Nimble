@@ -1,5 +1,6 @@
 package com.example.nimbleugahacks;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -8,12 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import android.Manifest;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -37,9 +41,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity{
+    private Handler mainHandler = new Handler();
     private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2);
+
     public static double upTime = System.nanoTime();
     private final static int SEND_SMS_PERMISSION_REQ=1;
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -164,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        IPM thread = new IPM();
+        thread.start();
 
 //        scheduler.scheduleAtFixedRate(new Runnable() {
 //            @Override
@@ -187,8 +194,30 @@ public class MainActivity extends AppCompatActivity {
 //        };
 //        t.scheduleAtFixedRate(tt,2000,1000);
 
+
     }
 
+    class IPM extends Thread {
+        @Override
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        double ipm = (double) Math.round(scanCount * 60 * 100 / ((System.nanoTime() - MainActivity.upTime) / 1_000_000_000.0)) / 100;
+                        String txt = "" + ipm;
+                        Log.i("MAANAS FIXED", txt);
+                        ipmText.setText(txt);
+                    }
+                });
+            }
+        }
+    }
 
 
     private boolean checkPermission() {
