@@ -10,5 +10,7 @@
         android:layout_height="wrap_content"
         android:elevation="8dp"
         android:textColor="#64DDC7"
-        tools:text="placeholder text" />
+        android:background="@drawable/back"
+        tools:text="placeholder text"
+        android:padding="10dp"/>
 </LinearLayout>
