@@ -32,6 +32,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         MainActivity.newText.setText(result.getText());
 //        itemDao.insertAll(new Item(1, result.getText(), 2.99));
         Log.i("SAHIL",itemDao.getAll().toString());
+
         onBackPressed();
     }
 
