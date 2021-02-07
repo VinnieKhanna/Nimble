@@ -96,21 +96,27 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     //Log.i("Tag", response.body().string());
                     JsonObject jsonObject = (JsonObject) new JsonParser().parse(response.body().string());
                     JsonArray itemPrices = (JsonArray) jsonObject.get("itemPrices");
-                    JsonObject details= itemPrices.get(0).getAsJsonObject();
+                    JsonObject details = itemPrices.get(0).getAsJsonObject();
                     String price = details.get("price").getAsString();
                     JsonObject item = (JsonObject) jsonObject.get("item");
-                    JsonArray packageIdentifiers = (JsonArray) jsonObject.get("preferenceIdentifiers");
-                    String name = packageIdentifiers.get(0).getAsJsonObject().get("type").getAsString();
+                    JsonArray packageIdentifiers = (JsonArray) item.get("packageIdentifiers");
+                    JsonObject type = (JsonObject) packageIdentifiers.get(0).getAsJsonObject();
+                    String name = type.get("type").getAsString();
 
                     String text = result.getText();
-                    Item curr = new Item(5, text, 2.99);
+                    final Item curr = new Item(5, text, 2.99);
                     itemDao.nuke();
                     itemDao.insertAll(curr);
 
                     Log.i("SAHIL", text);
                     //updating recycle view
-                    MainActivity.items.add("ITEM: " + curr.itemID + ", " + curr.storeName + ", " + curr.price);
-                    MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.items.add("ITEM: " + curr.itemID + ", " + curr.storeName + ", " + curr.price);
+                            MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
+                        }
+                    });
                 }
             }
 
