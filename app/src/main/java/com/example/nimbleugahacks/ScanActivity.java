@@ -28,6 +28,7 @@ import okhttp3.Response;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 
@@ -36,6 +37,7 @@ import java.io.IOException;
 class BasicAuthInterceptor implements Interceptor {
 
     private String credentials;
+
 
     public BasicAuthInterceptor(String user, String password) {
         this.credentials = Credentials.basic(user, password);
@@ -56,7 +58,9 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
     ZXingScannerView scannerView;
 //    ItemDao itemDao = new MainActivity();
     private ItemDao itemDao;
-    public static double total;
+
+    public static double total = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +123,13 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                         public void run() {
                             MainActivity.items.add(name + "  ITEM # " + keyID + "  $" + curr.price);
                             MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
+                        }
+                    });
+                    MainActivity.mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String totalString = "" + total;
+                            totalText.setText("$" + totalString);
                         }
                     });
                 }
