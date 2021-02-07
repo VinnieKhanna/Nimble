@@ -1,6 +1,6 @@
 package com.example.nimbleugahacks;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -9,54 +9,49 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import android.Manifest;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.telephony.SmsManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
-import org.json.*;
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Credentials;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.security.Permission;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
+public class MainActivity extends AppCompatActivity{
+    private Handler mainHandler = new Handler();
+    private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2);
 
-public class MainActivity extends AppCompatActivity {
-
+    public static double upTime = System.nanoTime();
     private final static int SEND_SMS_PERMISSION_REQ=1;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
     public static TextView newText;
     Button newButton;
+    public static int scanCount;
 
     public static RecyclerView recyclerView;
     public static RecyclerAdapter adapter;
@@ -72,16 +67,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static TextView itemText;
-    Button scanButton, managerButton;
+    TextView ipmText;
+    Button addManagerButton, managerButton;
+    FloatingActionButton scanButton;
+    String phoneNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
         items = new ArrayList<>();
-        items.add("CART");
-        Log.i("Tag","First message");
+
+//        items.add("CART");
 
 
 
@@ -92,9 +91,12 @@ public class MainActivity extends AppCompatActivity {
 
         //
         itemText = findViewById(R.id.itemText);
-        scanButton = findViewById(R.id.scanbutton);
+
+        ipmText = findViewById(R.id.ipmText);
+        addManagerButton = findViewById(R.id.addManagerButton);
         managerButton = findViewById(R.id.managerButton);
         managerButton.setEnabled(false);
+        scanButton = findViewById(R.id.floatingactionbutton);
 
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             managerButton.setEnabled(true);
@@ -102,33 +104,21 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
         }
 
-        Log.i("Tag", ((Boolean) checkPermission(Manifest.permission.SEND_SMS)).toString());
-//        try {
-//            OkHttpClient client = new OkHttpClient.Builder()
-//                    .addInterceptor(new BasicAuthInterceptor("1706446a-057c-4687-9050-3752e48ad6e1", "Temporarypassw0rd!"))
-//                    .build();
-//            Request request = new Request.Builder()
-//                    .header("content-type", "application/json")
-//                    .header("nep-organization", "9f7c0f9112384eadb0e1e70d957cecfc")
-//                    .header("nep-correlation-id", "2021-0206")
-//                    .header("nep-enterprise-unit", "e75260c4ea46481989ad82d220b8bf4b")
-//                    .url("https://gateway-staging.ncrcloud.com/catalog/item-details/62")
-//                    .build();
-//            Response response = client.newCall(request).execute();
-//            Log.i("Tag", response.toString());
-//        } catch (Exception e) {
-//            Log.i("Tag", "Error");
-//            e.printStackTrace();
-//        }
-
-
-
-
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkPermission()) {
                     startActivity(new Intent(getApplicationContext(), ScanActivity.class));
+                    ipmText = (TextView)findViewById(R.id.ipmText);
+                    if (ipmText == null) {
+                        Log.i("SAHILLLLLLLLL", "is ..");
+                    }
+                    scanCount++;
+                    Log.i("SAHIL LIKES MEN", "" + (System.nanoTime() - MainActivity.upTime)/1_000_000_000.0);
+                    double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+                    String txt = "" + ipm;
+                    Log.i("SCAN UPDATE MAANAS",txt);
+                    ipmText.setText(txt);
                 } else {
                     requestPermission();
                 }
@@ -138,7 +128,9 @@ public class MainActivity extends AppCompatActivity {
         managerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneNum = "4702094868";
+                if (phoneNum == null || phoneNum.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please Add a Manager", Toast.LENGTH_SHORT).show();
+                }
                 String name = "This works?!";
                 if (!TextUtils.isEmpty(phoneNum)&&!TextUtils.isEmpty(name)) {
 
@@ -150,11 +142,83 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please Add a Manager", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        addManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Add Manager Number");
+                final EditText input = new EditText(MainActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        phoneNum = input.getText().toString();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+            }
+        });
+        IPM thread = new IPM();
+        thread.start();
+
+//        scheduler.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+//                String txt = "" + ipm;
+//                Log.i("MAANAS FIXED",txt);
+//                ipmText.setText(txt);
+//            }
+//        }, 50, 100 , MILLISECONDS);
+//        Timer t = new Timer();
+//        TimerTask tt = new TimerTask() {
+//            @Override
+//            public void run() {
+//                double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+//                String txt = "" + ipm;
+//                Log.i("MAANAS FIXED",txt);
+//                ipmText.setText(txt);
+//                Log.i("MAANAS FIXED",txt);
+//            };
+//        };
+//        t.scheduleAtFixedRate(tt,2000,1000);
+
+
     }
+
+    class IPM extends Thread {
+        @Override
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        double ipm = (double) Math.round(scanCount * 60 * 100 / ((System.nanoTime() - MainActivity.upTime) / 1_000_000_000.0)) / 100;
+                        String txt = "" + ipm;
+                        Log.i("MAANAS FIXED", txt);
+                        ipmText.setText(txt);
+                    }
+                });
+            }
+        }
+    }
+
 
     private boolean checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
