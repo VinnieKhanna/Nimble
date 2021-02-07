@@ -1,5 +1,6 @@
 package com.example.nimbleugahacks;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,15 +16,39 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
+import org.json.*;
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Credentials;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         //
         items = new ArrayList<>();
         items.add("CART");
+        Log.i("Tag","First message");
+
 
 
         recyclerView = findViewById(R.id.recycler);
@@ -74,6 +101,28 @@ public class MainActivity extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
         }
+
+        Log.i("Tag", ((Boolean) checkPermission(Manifest.permission.SEND_SMS)).toString());
+//        try {
+//            OkHttpClient client = new OkHttpClient.Builder()
+//                    .addInterceptor(new BasicAuthInterceptor("1706446a-057c-4687-9050-3752e48ad6e1", "Temporarypassw0rd!"))
+//                    .build();
+//            Request request = new Request.Builder()
+//                    .header("content-type", "application/json")
+//                    .header("nep-organization", "9f7c0f9112384eadb0e1e70d957cecfc")
+//                    .header("nep-correlation-id", "2021-0206")
+//                    .header("nep-enterprise-unit", "e75260c4ea46481989ad82d220b8bf4b")
+//                    .url("https://gateway-staging.ncrcloud.com/catalog/item-details/62")
+//                    .build();
+//            Response response = client.newCall(request).execute();
+//            Log.i("Tag", response.toString());
+//        } catch (Exception e) {
+//            Log.i("Tag", "Error");
+//            e.printStackTrace();
+//        }
+
+
+
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
