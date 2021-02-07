@@ -11,11 +11,13 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.PermissionRequest;
 import android.widget.Button;
@@ -28,14 +30,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 
 public class MainActivity extends AppCompatActivity {
 
+    private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(2);
+    public static double upTime = System.nanoTime();
     private final static int SEND_SMS_PERMISSION_REQ=1;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
     public static TextView newText;
     Button newButton;
+    public static int scanCount;
 
     public static RecyclerView recyclerView;
     public static RecyclerAdapter adapter;
@@ -58,11 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
         items = new ArrayList<>();
-        items.add("CART");
+//        items.add("CART");
 
 
         recyclerView = findViewById(R.id.recycler);
@@ -72,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         //
         itemText = findViewById(R.id.itemText);
-        ipmText = findViewById(R.id.ipmText);
         scanButton = findViewById(R.id.scanbutton);
         managerButton = findViewById(R.id.managerButton);
         managerButton.setEnabled(false);
@@ -89,6 +100,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (checkPermission()) {
                     startActivity(new Intent(getApplicationContext(), ScanActivity.class));
+                    ipmText = (TextView)findViewById(R.id.ipmText);
+                    if (ipmText == null) {
+                        Log.i("SAHILLLLLLLLL", "is ..");
+                    }
+                    scanCount++;
+                    Log.i("SAHIL LIKES MEN", "" + (System.nanoTime() - MainActivity.upTime)/1_000_000_000.0);
+                    double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+                    String txt = "" + ipm;
+                    Log.i("SCAN UPDATE MAANAS",txt);
+                    ipmText.setText(txt);
                 } else {
                     requestPermission();
                 }
@@ -139,6 +160,29 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+//        scheduler.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+//                String txt = "" + ipm;
+//                Log.i("MAANAS FIXED",txt);
+//                ipmText.setText(txt);
+//            }
+//        }, 50, 100 , MILLISECONDS);
+//        Timer t = new Timer();
+//        TimerTask tt = new TimerTask() {
+//            @Override
+//            public void run() {
+//                double ipm = (double)Math.round(scanCount*60*100/((System.nanoTime() - MainActivity.upTime)/1_000_000_000.0))/100;
+//                String txt = "" + ipm;
+//                Log.i("MAANAS FIXED",txt);
+//                ipmText.setText(txt);
+//                Log.i("MAANAS FIXED",txt);
+//            };
+//        };
+//        t.scheduleAtFixedRate(tt,2000,1000);
+
     }
 
 

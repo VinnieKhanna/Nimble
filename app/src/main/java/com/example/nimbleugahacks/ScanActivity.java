@@ -8,6 +8,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 
@@ -17,6 +18,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 //    ItemDao itemDao = new MainActivity();
     private ItemDao itemDao;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +27,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                 AppDatabase.class, "nimbleDB").allowMainThreadQueries().build();
         itemDao = db.itemDao();
         setContentView(scannerView);
+
     }
 
     @Override
@@ -35,7 +38,6 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
         itemDao.nuke();
         itemDao.insertAll(curr);
 
-        Log.i("SAHIL", text);
         //updating recycle view
         MainActivity.items.add("ITEM: " + curr.itemID + ", " + curr.storeName + ", " + curr.price);
         MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
