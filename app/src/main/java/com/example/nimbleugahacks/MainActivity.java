@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     public static TextView itemText;
+    public static TextView totalText;
     TextView ipmText;
     Button addManagerButton, managerButton;
     FloatingActionButton scanButton;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity{
         managerButton = findViewById(R.id.managerButton);
         managerButton.setEnabled(false);
         scanButton = findViewById(R.id.floatingactionbutton);
+        totalText = findViewById(R.id.totalText);
 
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             managerButton.setEnabled(true);
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity{
                     String txt = "" + ipm;
                     Log.i("SCAN UPDATE MAANAS",txt);
                     ipmText.setText(txt);
+                    String total = "" + ScanActivity.total;
+                    totalText.setText(total);
                 } else {
                     requestPermission();
                 }

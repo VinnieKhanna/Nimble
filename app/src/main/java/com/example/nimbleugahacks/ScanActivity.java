@@ -56,6 +56,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
     ZXingScannerView scannerView;
 //    ItemDao itemDao = new MainActivity();
     private ItemDao itemDao;
+    public static double total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,8 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
                     String text = result.getText();
                     final Item curr = new Item(5, text, Double.parseDouble(price));
+                    total += curr.price;
+                    String total = "" + ScanActivity.total;
                     itemDao.nuke();
                     itemDao.insertAll(curr);
 
