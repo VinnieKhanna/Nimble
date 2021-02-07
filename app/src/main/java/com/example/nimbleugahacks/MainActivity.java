@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity{
     public static TextView itemText;
     public static TextView totalText;
     TextView ipmText;
-    Button addManagerButton, managerButton;
+    Button addManagerButton, managerButton, finishButton;
     FloatingActionButton scanButton;
     String phoneNum = "";
     private boolean warned = false;
@@ -100,12 +100,26 @@ public class MainActivity extends AppCompatActivity{
         managerButton.setEnabled(false);
         scanButton = findViewById(R.id.floatingactionbutton);
         totalText = findViewById(R.id.totalText);
+        finishButton = findViewById(R.id.finishButton);
+
 
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             managerButton.setEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQ);
         }
+
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                items.clear();
+                ipmText.setText("");
+                totalText.setText("Total");
+                ScanActivity.total = 0;
+                scanCount = 0;
+                upTime = System.nanoTime();
+            }
+        });
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
