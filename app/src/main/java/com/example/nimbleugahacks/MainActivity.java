@@ -4,6 +4,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import android.Manifest;
 import android.content.DialogInterface;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static TextView newText;
     Button newButton;
+    public static RecyclerView recyclerView;
+    public static RecyclerAdapter adapter;
+    public static List<String> items;
 //
 //    private AppDatabase db = Room.databaseBuilder(this,
 //            AppDatabase.class, "nimbleDB").build();
@@ -45,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //
+        items = new ArrayList<>();
+        items.add("CART");
+
+
+        recyclerView = findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RecyclerAdapter(items);
+        recyclerView.setAdapter(adapter);
+
+        //
         itemText = findViewById(R.id.itemText);
         scanButton = findViewById(R.id.scanbutton);
         managerButton = findViewById(R.id.managerButton);

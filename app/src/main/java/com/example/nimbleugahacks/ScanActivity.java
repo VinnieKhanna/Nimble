@@ -29,9 +29,16 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
 
     @Override
     public void handleResult(Result result) {
-        MainActivity.itemText.setText(result.getText());
-//        itemDao.insertAll(new Item(1, result.getText(), 2.99));
-        Log.i("SAHIL",itemDao.getAll().toString());
+        //db
+        String text = result.getText();
+        Item curr = new Item(5, text, 2.99);
+        itemDao.nuke();
+        itemDao.insertAll(curr);
+
+        Log.i("SAHIL", text);
+        //updating recycle view
+        MainActivity.items.add("ITEM: " + curr.itemID + ", " + curr.storeName + ", " + curr.price);
+        MainActivity.adapter.notifyItemInserted(MainActivity.items.size() - 1);
 
         onBackPressed();
     }

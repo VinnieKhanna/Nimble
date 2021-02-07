@@ -23,4 +23,7 @@ public interface ItemDao {
 
     @Delete
     void delete(Item item);
+
+    @Query("DELETE FROM item")
+    void nuke();
 }
