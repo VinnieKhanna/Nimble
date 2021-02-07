@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static TextView itemText;
+    TextView ipmText;
     Button scanButton, managerButton;
     FloatingActionButton addManagerButton;
     String phoneNum;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         //
         itemText = findViewById(R.id.itemText);
+        ipmText = findViewById(R.id.ipmText);
         scanButton = findViewById(R.id.scanbutton);
         managerButton = findViewById(R.id.managerButton);
         managerButton.setEnabled(false);

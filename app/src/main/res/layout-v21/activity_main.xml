@@ -76,6 +76,20 @@
         android:fontFamily="@font/rubik"
         >
     </Button>
+
+    <TextView
+        android:id="@+id/ipmText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/rubik_light"
+        android:text="35"
+        android:textColor="#FFBE33"
+        app:layout_constraintBottom_toTopOf="@id/bottomView"
+        app:layout_constraintRight_toRightOf="parent">
+    </TextView>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/bottomcoordlayout"
         android:layout_width="match_parent"
