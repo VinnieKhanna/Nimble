@@ -112,7 +112,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                     String text = result.getText();
                     final Item curr = new Item(5, text, Double.parseDouble(price));
                     total += curr.price;
-                    String total = "" + ScanActivity.total;
+                    final String total = "" + ScanActivity.total;
                     itemDao.nuke();
                     itemDao.insertAll(curr);
 
@@ -129,7 +129,7 @@ public class ScanActivity extends AppCompatActivity implements ZXingScannerView.
                         @Override
                         public void run() {
                             String totalString = "" + total;
-                            totalText.setText("$" + totalString);
+                            MainActivity.totalText.setText("$" + totalString);
                         }
                     });
                 }
